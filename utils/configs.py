@@ -1,0 +1,16 @@
+lang_tag_map = {
+    "en": "English",
+    "de": "German",
+    "fr": "French",
+    "nl": "Dutch",
+    "it": "Italian",
+    "es": "Spanish",
+    "pt": "Portuguese",
+    "ko": "Korean",
+    "ru": "Russian",
+    "zh": "Chinese",
+    "ja": "Japanese",
+    "lt": "Lithuanian",
+    "th": "Thai",
+    "cs": "Czech",
+}
