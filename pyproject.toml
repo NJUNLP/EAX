@@ -1,0 +1,81 @@
+[build-system]
+requires = ["setuptools >= 61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "EAX"
+dynamic = ["version"]
+
+dependencies = [
+    "torch>=2.2.0",
+    "transformers",
+    "accelerate",
+    "sentencepiece",
+    "pandas",
+    "pyarrow",
+    "fire",
+]
+
+requires-python = ">= 3.9"
+
+authors = [
+  {name = "Sen Yang", email = "yangsen@smail.nju.edu.cn"},
+]
+maintainers = [
+  {name = "Sen Yang", email = "yangsen@smail.nju.edu.cn"},
+]
+
+description = ""
+
+readme = "README.md"
+
+license = {file = "LICENSE"}
+
+keywords = ["deep-learning", "pytorch", "large language model", "LLM", "machine translation"]
+
+
+classifiers = [
+  # How mature is this project? Common values are
+  #   3 - Alpha
+  #   4 - Beta
+  #   5 - Production/Stable
+  "Development Status :: 3 - Alpha",
+
+  # Indicate who your project is intended for
+  "Intended Audience :: Developers",
+  "Intended Audience :: Science/Research",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+
+  # Pick your license as you wish (see also "license" above)
+  "License :: OSI Approved :: MIT License",
+
+  # Specify the Python versions you support here.
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+]
+
+
+# [project.urls]
+# Homepage = "https://github.com/NJUNLP/EAX"
+# Documentation = "https://github.com/NJUNLP/EAX"
+# Repository = "https://github.com/NJUNLP/EAX"
+# Issues = "https://github.com/NJUNLP/EAX/issues"
+# Changelog = ""
+
+[tool.setuptools]
+py-modules = ["EAX"]
+
+
+[project.optional-dependencies]
+eval = [
+    "unbabel-comet",
+    "sacrebleu[ko]",
+    "bleurt @ git+https://github.com/google-research/bleurt.git@master",
+    "tensorflow==2.19.0",
+    "openai",
+    "httpx==0.23.3", # there is an issue with the httpx package. see https://github.com/openai/openai-python/issues/1054
+]
+inference = ["vllm>=0.6.3", "torch>=2.4.0"]
+
