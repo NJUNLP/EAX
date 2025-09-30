@@ -108,8 +108,8 @@ def filter_by_token_length(df: pd.DataFrame, max_len: int, tokenizer) -> pd.Data
 def main(
     data_path: str,
     output_path: str,
-    tokenizer_path: str, # New argument for HF tokenizer
-    max_len: int = 1024, # Max sequence length in tokens
+    tokenizer_path: str = None,
+    max_len: int = 1024,
     src_key: str = "src",
     trg_key: str = "trg"
 ):
@@ -131,15 +131,17 @@ def main(
     Path(dir_name).mkdir(parents=True, exist_ok=True)
     print(f"Output directory created/verified: {dir_name}")
     
-    # Load Hugging Face Tokenizer
-    print(f"\n-> Loading tokenizer from: {tokenizer_path}")
-    try:
-        tokenizer = AutoTokenizer.from_pretrained(tokenizer_path)
-        print("-> Tokenizer loaded successfully.")
-    except Exception as e:
-        print(f"Error loading tokenizer: {e}")
-        print("Exiting due to tokenizer loading failure.")
-        return
+    tokenizer = None
+    if tokenizer_path:
+        # Load Hugging Face Tokenizer
+        print(f"\n-> Loading tokenizer from: {tokenizer_path}")
+        try:
+            tokenizer = AutoTokenizer.from_pretrained(tokenizer_path)
+            print("-> Tokenizer loaded successfully.")
+        except Exception as e:
+            print(f"Error loading tokenizer: {e}")
+            print("Exiting due to tokenizer loading failure.")
+            return
 
     # Load data
     print(f"\n-> Loading data from: {data_path}")
@@ -187,7 +189,9 @@ def main(
     print(f"-> Instruction data generated for {len(df)} samples.")
     
     # --- 3. Token Length Filtering ---
-    df = filter_by_token_length(df, max_len, tokenizer)
+    if tokenizer:
+        df = filter_by_token_length(df, max_len, tokenizer)
+    
     final_samples = len(df)
     print(f"\n-> Final number of samples after filtering: {final_samples}")
     
