@@ -75,7 +75,6 @@ eval = [
     "bleurt @ git+https://github.com/google-research/bleurt.git@master",
     "tensorflow==2.19.0",
     "openai",
-    "httpx==0.23.3", # there is an issue with the httpx package. see https://github.com/openai/openai-python/issues/1054
 ]
-inference = ["vllm>=0.6.3", "torch>=2.4.0"]
+infer = ["vllm>=0.6.3"]
 
