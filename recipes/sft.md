@@ -26,14 +26,14 @@ python3 scripts/prepare_sft_instruction_data.py --data_path  TowerBlocks-MT/data
 
 ## Training
 
-Use [LLaMA-Factory](https://github.com/hiyouga/LLaMA-Factory) for supervised fine-tuning:
+We employ [LLaMA-Factory](https://github.com/hiyouga/LLaMA-Factory) for supervised fine-tuning.
 
 ### Setup
 Install the LLaMA-Factory runtime environment according to the [documentation](https://github.com/hiyouga/LLaMA-Factory?tab=readme-ov-file#getting-started).
 
 ### Dataset
-2. Place the SFT data in the `LLaMA-Factory/data` directory.
-3. Add the dataset information to `LLaMA-Factory/data/dataset_info.json`:
+- Place the SFT data in the `LLaMA-Factory/data` directory.
+- Add the dataset information to `LLaMA-Factory/data/dataset_info.json`:
 ```json
 {
     "sft_towerblocks_mt": {
