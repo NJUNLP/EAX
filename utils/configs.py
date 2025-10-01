@@ -9,8 +9,7 @@ lang_tag_map = {
     "ko": "Korean",
     "ru": "Russian",
     "zh": "Chinese",
-    "ja": "Japanese",
-    "lt": "Lithuanian",
-    "th": "Thai",
-    "cs": "Czech",
 }
+
+
+valid_langs = list(lang_tag_map.keys())
