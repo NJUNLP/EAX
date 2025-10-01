@@ -101,3 +101,8 @@ FORCE_TORCHRUN=1 llamafactory-cli train path/to/qwen7b_full_sft_ds3.yaml
 
 > [!TIP]
 > For Multiple Nodes training, refer to [Supervised Fine-Tuning on Multiple Nodes](https://github.com/hiyouga/LLaMA-Factory/tree/main/examples#supervised-fine-tuning-on-multiple-nodes).
+
+## Next Steps
+
+For the subsequent steps in the workflow, refer to the following documentation:
+- [Reward Modeling](rm.md)：build translation evaluation capabilities for the translation model.
