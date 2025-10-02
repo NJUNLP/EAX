@@ -105,4 +105,5 @@ FORCE_TORCHRUN=1 llamafactory-cli train path/to/qwen7b_full_sft_ds3.yaml
 ## Next Steps
 
 For the subsequent steps in the workflow, refer to the following documentation:
-- [Reward Modeling](rm.md)：build translation evaluation capabilities for the translation model.
+- [Reward Modeling](rm.md): build translation evaluation capabilities for the translation model.
+- [x2x Optimization](xpo.md): curate x2x preference pair data with the translation model and reward model. Afterward, train the translation model with the curated data.
