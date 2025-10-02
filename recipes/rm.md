@@ -47,7 +47,7 @@ wait
 
 Remove duplicate generated translation candidates:
 ```bash
-python3 scripts/post_clean_sampling_data.py --data_path $DATA_PATH --text_key ${OUT_KEY}_sampling_text
+python3 scripts/post_clean_sampling_data.py --data_path $DATA_PATH --text_key $OUT_KEY
 ```
 
 ## Scoring Data with BLEURT
@@ -97,7 +97,8 @@ python3 scripts/construct_preference_data.py \
     --src_text_key src_text \
     --trg_text_key trg_text \
     --src_lang_key src_lang \
-    --trg_lang_key trg_lang
+    --trg_lang_key trg_lang \
+    --to_percentile True # multiply the score by 100
 ```
 
 The script will print the distribution of the constructed preference data pairs across each language pair:
@@ -149,7 +150,21 @@ We employ [LLaMA-Factory](https://github.com/hiyouga/LLaMA-Factory) for reward m
 Install the LLaMA-Factory runtime environment according to the [documentation](https://github.com/hiyouga/LLaMA-Factory?tab=readme-ov-file#getting-started).
 
 ### Dataset
-- Place the preference pair data in the `LLaMA-Factory/data` directory.
+
+Run the command below to add translation instructions to the translation pairs for reward modeling:
+```bash
+python3 scripts/prepare_pair_instruction_data.py --data_path  TowerBlocks-MT/rm_pair_data.parquet --output_path rm_towerblocks_mt.parquet
+```
+
+> [!TIP]
+> You can additionally specify the Tokenizer path to filter out overlong samples:
+> ```bash
+> python3 scripts/prepare_pair_instruction_data.py --data_path  TowerBlocks-MT/rm_pair_data.parquet --output_path rm_towerblocks_mt.parquet --tokenizer_path path/to/tokenizer --max_len 1024
+> ```
+
+
+
+- Place the preference pair data(`rm_towerblocks_mt.parquet`) in the `LLaMA-Factory/data` directory.
 - Add the dataset information to `LLaMA-Factory/data/dataset_info.json`:
 ```json
 {
@@ -225,3 +240,9 @@ FORCE_TORCHRUN=1 llamafactory-cli train path/to/qwen7b_full_rm_ds3.yaml
 > FORCE_TORCHRUN=1 NNODES=2 NODE_RANK=0 MASTER_ADDR=192.168.0.1 MASTER_PORT=29500 llamafactory-cli train path/to/qwen7b_full_rm_ds3.yaml
 > FORCE_TORCHRUN=1 NNODES=2 NODE_RANK=1 MASTER_ADDR=192.168.0.1 MASTER_PORT=29500 llamafactory-cli train path/to/qwen7b_full_rm_ds3.yaml
 > ```
+
+
+## Next Steps
+
+For the subsequent steps in the workflow, refer to the following documentation:
+- [x2x Optimization](xpo.md): curate x2x preference pair data with the translation model and reward model. Afterward, train the translation model with the curated data.
