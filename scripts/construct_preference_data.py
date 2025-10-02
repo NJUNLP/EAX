@@ -92,9 +92,10 @@ def run_construct(
     min_winner_score: Optional[float] = None,
     src_text_key: str = None,
     trg_text_key: str = None,
+    ref_text_key: str = None,
     src_lang_key: str = None,
     trg_lang_key: str = None,
-    en_text_key: str = None,
+    ref_lang_key: str = None,
 ):
     new_rows = []
 
@@ -166,12 +167,15 @@ def run_construct(
             new_row["src_text"] = row[src_text_key]
         if trg_text_key is not None:
             new_row["trg_text"] = row[trg_text_key]
+        if ref_text_key is not None:
+            new_row["ref_text"] = row[ref_text_key]
         if src_lang_key is not None:
             new_row["src_lang"] = row[src_lang_key]
         if trg_lang_key is not None:
             new_row["trg_lang"] = row[trg_lang_key]
-        if en_text_key is not None:
-            new_row["en_text"] = row[en_text_key]
+        if ref_lang_key is not None:
+            new_row["ref_lang"] = row[ref_lang_key]
+
 
         new_rows.append(new_row)
 
@@ -235,7 +239,7 @@ def print_lang_dist(df):
     print(f"\nTotal samples: {df.shape[0]}")
 
 
-def construct_rm_data(
+def construct_preference_data(
     data_path: str,
     output_path: str,
     mt_texts_key: str,
@@ -247,14 +251,17 @@ def construct_rm_data(
     min_winner_score: Optional[float] = None,
     src_text_key: Optional[str] = None,
     trg_text_key: Optional[str] = None,
+    ref_text_key: Optional[str] = None,
     src_lang_key: Optional[str] = None,
     trg_lang_key: Optional[str] = None,
-    en_text_key: Optional[str] = None,
+    ref_lang_key: Optional[str] = None,
+    to_percentile: bool = False,
 ):
     df_list = load_df_list(data_path)
 
-    for df in df_list:
-        to_percentile(df, score_key)
+    if to_percentile:
+        for df in df_list:
+            to_percentile(df, score_key)
 
     print("all sample:", sum([len(df) for df in df_list]))
 
@@ -270,9 +277,10 @@ def construct_rm_data(
             min_winner_score=min_winner_score,
             src_text_key=src_text_key,
             trg_text_key=trg_text_key,
+            ref_text_key=ref_text_key,
             src_lang_key=src_lang_key,
             trg_lang_key=trg_lang_key,
-            en_text_key=en_text_key,
+            ref_lang_key=ref_lang_key,
         )
         for df in tqdm(df_list, desc="Processing language pairs")
     ]
@@ -286,4 +294,4 @@ def construct_rm_data(
 
 
 if __name__ == "__main__":
-    fire.Fire(construct_rm_data)
+    fire.Fire(construct_preference_data)
