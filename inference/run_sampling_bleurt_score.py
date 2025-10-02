@@ -7,37 +7,7 @@ from pathlib import Path
 import numpy as np
 import fire
 from tqdm import tqdm
-
-
-
-def flat_list(items_list: list) -> tuple[list, list]:
-    item_count_list = []
-    flattened_items_list = []
-    for items in items_list:
-        assert isinstance(items, list) or isinstance(items, np.ndarray)
-        item_count_list.append(len(items))
-        flattened_items_list.extend(items)
-
-    return flattened_items_list, item_count_list
-
-def unflat_list(flattened_items_list: list, item_count_list: list) -> list:
-    assert sum(item_count_list) == len(flattened_items_list)
-    unflattened_items_list = []
-    start_idx = 0
-    for item_count in item_count_list:
-        end_idx = start_idx + item_count
-        unflattened_items_list.append(flattened_items_list[start_idx:end_idx])
-        start_idx = end_idx
-    
-    return unflattened_items_list
-
-def repeat_text(text_list:list, repeat_count: list):
-    assert len(text_list) == len(repeat_count)
-    repeated_text_list = []
-    for text, count in zip(text_list, repeat_count):
-        repeated_text_list.extend([text] * count)
-    return repeated_text_list
-
+from utils.helpers import flat_list, unflat_list, repeat_text
 
 
 def run_scoring(df, bleurt_scorer, ref_key: str, mt_key: str, out_key: str):
