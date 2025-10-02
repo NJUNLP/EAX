@@ -59,3 +59,12 @@ def get_diverse_prompt(src_tag: str, trg_tag: str) -> str:
     prompts_list = _get_prompts(src_tag, trg_tag)
     prompt = random.choice(prompts_list)
     return prompt
+
+
+def get_eaxt_prompt(src_tag: str, trg_tag: str, ref_tag: str) -> str:
+    src_lang = lang_tag_map.get(src_tag, src_tag)
+    trg_lang = lang_tag_map.get(trg_tag, trg_tag)
+    ref_lang = lang_tag_map.get(ref_tag, ref_tag)
+    prompt = f"Given a {src_lang} text and its {ref_lang} version as a reference, translate the source text into {trg_lang}.\n{src_lang} Source: {{}}\n{ref_lang} Reference: {{}}\n{trg_lang} Translation:"
+    
+    return prompt
