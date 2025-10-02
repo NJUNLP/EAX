@@ -1,21 +1,6 @@
-import pandas as pd
 from vllm import LLM, SamplingParams
-from utils.configs import lang_tag_map
-from transformers import AutoTokenizer, PreTrainedTokenizer
-import glob
-import os
-
-from pathlib import Path
-import warnings
-
-
-def post_clean(text: str) -> str:
-    text = text.strip()
-    if "\n" in text:
-        warnings.warn("output multiple lines, concatenate to one line.")
-        text = text.replace("\n", "; ")
-    return text
-
+from utils.prompts import get_eval_prompt
+from utils.helpers import post_clean
 
 def generate_batch(model: LLM, input_texts, sampling_params):
     outputs = model.generate(input_texts, sampling_params)
@@ -27,10 +12,6 @@ def generate_batch(model: LLM, input_texts, sampling_params):
         output_text = post_clean(output_text)
         clean_outputs.append(output_text)
     return clean_outputs
-
-
-def load_direct_prompt(src_lang, trg_lang, src_text):
-    return f"Translate the following text from {src_lang} into {trg_lang}:\n{src_lang}: {src_text}\n{trg_lang}:"
 
 
 def func_call(
@@ -66,11 +47,7 @@ def func_call(
             }
         )
 
-    example_prompt = load_direct_prompt(
-        lang_tag_map[src_langs[0]],
-        lang_tag_map[trg_langs[0]],
-        src_list[0],
-    )
+    example_prompt = get_eval_prompt(src_langs[0], trg_langs[0]).format(src_list[0])
 
     print("Use prompt: {}".format(example_prompt))
 
@@ -82,11 +59,7 @@ def func_call(
         src_lang = sample["src_lang"]
         trg_lang = sample["trg_lang"]
 
-        input_text = load_direct_prompt(
-            lang_tag_map[src_lang],
-            lang_tag_map[trg_lang],
-            src_text,
-        )
+        input_text = get_eval_prompt(src_lang, trg_lang).format(src_text)
 
         if chat_template:
             messages = [
