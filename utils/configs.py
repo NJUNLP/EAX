@@ -12,4 +12,17 @@ lang_tag_map = {
 }
 
 
+flores_langcode_map = {
+    "en": "eng_Latn",
+    "de": "deu_Latn",
+    "fr": "fra_Latn",
+    "nl": "nld_Latn",
+    "it": "ita_Latn",
+    "es": "spa_Latn",
+    "pt": "por_Latn",
+    "ko": "kor_Hang",
+    "ru": "rus_Cyrl",
+    "zh": "zho_Hans",
+}
+
 valid_langs = list(lang_tag_map.keys())
