@@ -1,6 +1,8 @@
 from typing import Dict
 from bleurt import score
 import fire
+import subprocess
+import os
 
 def func_call(bleurt_path , mt_list, ref_list, scorer=None):
     assert len(mt_list) == len(ref_list)
@@ -17,15 +19,37 @@ def func_call(bleurt_path , mt_list, ref_list, scorer=None):
     return {"scores": scores, "system_score": system_score}
 
 
+def cli_call(bleurt_path , mt_list, ref_list):
+    with open("_temp.mt", "w") as f_mt, open("_temp.ref", "w") as f_ref:
+        for mt, ref in zip(mt_list, ref_list):
+            f_mt.write(mt + "\n")
+            f_ref.write(ref + "\n")
+    command = f"python3 -m bleurt.score_files -candidate_file=_temp.mt -reference_file=_temp.ref -bleurt_checkpoint={bleurt_path} -scores_file=_temp.out"
+    subprocess.run(command, shell=True, check=True)
 
-def main(mt_path: str, ref_path: str, bleurt_path: str = "BLEURT-20") -> Dict:
+    with open("_temp.out", "r") as f_out:
+        scores = [float(line.strip()) for line in f_out]
+
+    os.remove("_temp.mt")
+    os.remove("_temp.ref")
+    os.remove("_temp.out")
+
+    return {"scores": scores, "system_score": sum(scores) / len(scores)}
+
+
+
+
+def main(mt_path: str, ref_path: str, output_path: str,bleurt_path: str = "BLEURT-20") -> Dict:
 
     with open(mt_path, "r") as f_mt, open(ref_path, "r") as f_ref:
         mt_list = [line.strip() for line in f_mt]
         ref_list = [line.strip() for line in f_ref]
         
-    return func_call(bleurt_path, mt_list, ref_list)
+    results = func_call(bleurt_path, mt_list, ref_list)
 
+    with open(output_path, "w") as f_out:
+        for score in results["scores"]:
+            f_out.write(f"{score}\n")
 
 
 if __name__ == "__main__":
