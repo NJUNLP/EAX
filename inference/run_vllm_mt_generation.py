@@ -1,6 +1,8 @@
 from vllm import LLM, SamplingParams
 from utils.prompts import get_eval_prompt
 from utils.helpers import post_clean
+import fire
+import json
 
 def generate_batch(model: LLM, input_texts, sampling_params):
     outputs = model.generate(input_texts, sampling_params)
@@ -76,3 +78,57 @@ def func_call(
     out_dict["response"] = responses
 
     return out_dict
+
+
+def main(
+    model_path: str,
+    infer_data_path: str,
+    out_data_path: str = None,
+    max_new_tokens: int = 768,
+    temperature: float = 0,
+    top_p: float = 1.0,
+    chat_template: bool = True,
+):
+    llm = LLM(model_path)
+    tokenizer = llm.get_tokenizer()
+    sampling_params = SamplingParams(
+        n=1,
+        temperature=temperature,
+        max_tokens=max_new_tokens,
+        top_p=top_p,
+    )
+
+    with open(infer_data_path, "r", encoding="utf-8") as f:
+        infer_data = json.load(f)
+
+    src_list = []
+    src_langs = []
+    trg_langs = []
+    for sample in infer_data:
+        src_list.append(sample["src_text"])
+        src_langs.append(sample["src_lang"])
+        trg_langs.append(sample["trg_lang"])
+
+    out_dict = func_call(
+        llm,
+        tokenizer,
+        src_list,
+        src_langs,
+        trg_langs,
+        chat_template=chat_template,
+        max_new_tokens=max_new_tokens,
+        sampling_params=sampling_params,
+    )
+
+    for sample, response in zip(infer_data, out_dict["response"]):
+        sample["mt_text"] = response
+    
+    if out_data_path is None:
+        out_data_path = infer_data_path
+    
+    with open(out_data_path, "w", encoding="utf-8") as f:
+        json.dump(infer_data, f, ensure_ascii=False, indent=2)
+
+
+if __name__ == "__main__":
+    fire.Fire(main)
