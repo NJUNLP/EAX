@@ -149,17 +149,16 @@ def run(
     lang_pair_scores = run_evaluation(infer_data_path, metrics, bleurt_path=bleurt_path, comet_path=comet_path)
 
     print("Logging results...")
-    log_results(lang_pair_scores, config, split, metrics, log_to_wandb=log_to_wandb)
-    
+    log_results(lang_pair_scores, config, metrics, log_to_wandb=log_to_wandb)
+        
     if log_to_wandb:
-        print(f"Finished logging results for {config['model_name']} on split {split} to wandb.")
+        print(f"Finished logging results for {config['model_name']} to wandb.")
     else:
-        print(f"Finished logging results for {config['model_name']} on split {split}.")
+        print(f"Finished logging results for {config['model_name']}.")
 
 def log_results(
     lang_pair_scores: Dict[tuple, Dict[str, float]],
     config: Dict[str, Any],
-    split: str,
     metrics: List[str],
     log_to_wandb: bool = True,
     valid_langs: List[str] = valid_langs,
@@ -170,7 +169,6 @@ def log_results(
     Args:
         lang_pair_scores: A dictionary with evaluation scores for each language pair.
         config: A dictionary containing the configuration for the run.
-        split: The split type ('dev', 'devtest').
         metrics: A list of metrics that were calculated.
         log_to_wandb: Whether to log to wandb or just print to stdout.
         valid_langs: List of valid language codes.
@@ -193,14 +191,13 @@ def log_results(
             )
 
     if log_to_wandb:
-        log_results_to_wandb(lang_pair_scores, config, split, metrics, valid_langs, overall_scores)
+        log_results_to_wandb(lang_pair_scores, config, metrics, valid_langs, overall_scores)
     else:
-        log_results_to_stdout(lang_pair_scores, config, split, metrics, valid_langs, overall_scores)
+        log_results_to_stdout(lang_pair_scores, config, metrics, valid_langs, overall_scores)
 
 def log_results_to_wandb(
     lang_pair_scores: Dict[tuple, Dict[str, float]],
     config: Dict[str, Any],
-    split: str,
     metrics: List[str],
     valid_langs: List[str],
     overall_scores: Dict[str, float],
@@ -213,7 +210,7 @@ def log_results_to_wandb(
     project_name = "eax-eval-matrix"
     wandb.init(
         project=project_name,
-        name=f"{config['model_name']}-{split}",
+        name=f"{config['model_name']}",
         config=config,
     )
 
@@ -254,7 +251,6 @@ def log_results_to_wandb(
 def log_results_to_stdout(
     lang_pair_scores: Dict[tuple, Dict[str, float]],
     config: Dict[str, Any],
-    split: str,
     metrics: List[str],
     valid_langs: List[str],
     overall_scores: Dict[str, float],
@@ -263,7 +259,7 @@ def log_results_to_stdout(
     Prints evaluation results to stdout in a formatted way.
     """
     print("\n" + "="*80)
-    print(f"EVALUATION RESULTS: {config['model_name']} on {split}")
+    print(f"EVALUATION RESULTS: {config['model_name']}")
     print("="*80)
     
     # Print overall scores
