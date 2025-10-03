@@ -235,4 +235,4 @@ FORCE_TORCHRUN=1 llamafactory-cli train path/to/qwen7b_full_dpo_ds3.yaml
 ## Next Steps
 
 For the subsequent steps in the workflow, refer to the following documentation:
-- [Evaluation](eval.md): evaluate the DPO model on FLORES and any other datasets.
+- [Evaluation](../README.md#evaluation-on-flores): evaluate models on FLORES and any other datasets.

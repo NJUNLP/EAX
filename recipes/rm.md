@@ -246,3 +246,4 @@ FORCE_TORCHRUN=1 llamafactory-cli train path/to/qwen7b_full_rm_ds3.yaml
 
 For the subsequent steps in the workflow, refer to the following documentation:
 - [x2x Optimization](xpo.md): curate x2x preference pair data with the translation model and reward model. Afterward, train the translation model with the curated data.
+- [Evaluation](../README.md#evaluation-on-flores): evaluate models on FLORES and any other datasets.
