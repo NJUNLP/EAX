@@ -87,7 +87,7 @@ python3 eval/run_eval.py \
   --metrics ["bleurt","sacrebleu","comet"] \
   --bleurt_path BLEURT-20 \
   --comet_path wmt22-comet-da/checkpoints/model.ckpt \
-  --log_to_wandb True
+  --log_to_wandb True \
   --config '{"model_name": "qwen7b_eax"}' # any info that you want to log to wandb
 ```
 
