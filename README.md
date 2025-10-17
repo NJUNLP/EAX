@@ -1,4 +1,4 @@
-# EAX
+# ⚓EAX
 
 <a href="https://arxiv.org/abs/2509.19770">
   <img src="https://img.shields.io/badge/EAX-Paper-blue"></a>
