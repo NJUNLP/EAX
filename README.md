@@ -8,7 +8,50 @@
   <img src="https://img.shields.io/badge/License-MIT-yellow"></a>
 
 
-Work in progress...
+English-Anchored Optimization for Many-to-Many Translation (EAX) augments direct non-English→non-English (x2x) translation in LLMs by leveraging strong English-centric abilities. EAX synthesizes omnidirectional training data with English references, scores it using an English-anchored reward model, and optimizes models via preference learning. Codes, datasets, and checkpoints are released for reproducibility.
+
+## Overview
+
+- Problem: LLMs trained with English-centric data excel at `en↔x` but underperform on direct `x↔x` translation.
+- Insight: Use English as an anchor at generation and evaluation time to bootstrap high-quality `x↔x` data from existing `en↔x` corpora.
+- Method: Combine English-Anchored x2x Translation (EAxT), English-Anchored x2x Evaluation (EAxE) via reward modeling, and preference-based optimization (DPO).
+- Scope: 72 `x↔x` directions across 9 languages on FLORES-200.
+
+
+COMET22 performance on FLORES-200 testset:
+![COMET Radar Overview](radar_comet.png)
+
+## Method Overview
+
+- English-Anchored x2x Translation (EAxT): provide both non-English source and its English reference to the model when translating into a target non-English language; improves output quality over direct or pivot-only translation.
+- English-Anchored x2x Evaluation (EAxE): train a reward model on `en→x` preference pairs and score `x→y` candidates via their English reference as a proxy.
+- Preference Construction: sample multiple candidates per `x→y`, score with EAxE, keep best and worst to form pairs; filter by margin for high-confidence preferences.
+- Optimization: train with Direct Preference Optimization (DPO) for stronger generalization than SFT.
+
+The overview of EAX. Based on existing parallel data, the comparison of three methods for synthesizing x2x translation data (a), the process of constructing reward model for en2x evaluation (b) and the x2x preference data construction (c):
+![EAX_overview](EAX_overview.png)
+
+## Performance Overview
+
+### BLEURT / COMET on FLORES-200
+
+| Model (7B)         | en→x (SFT) | en→x (EAX) | x→x (SFT) | x→x (EAX) |
+|--------------------|------------|------------|-----------|-----------|
+| Llama2-7B          | 72.05 / 85.91 | 73.06 / 86.74 | 61.92 / 80.05 | 68.91 / 83.96 |
+| TowerBase-7B       | 76.14 / 88.46 | 76.73 / 88.86 | 68.17 / 83.81 | 72.95 / 86.30 |
+| Qwen2.5-7B         | 74.00 / 87.23 | 74.96 / 87.87 | 70.20 / 84.72 | 71.44 / 85.39 |
+
+### GPT-4 evaluation on FLORES-200
+
+| Model                 | x2en  | en2x  | x2x   | AVG   |
+|-----------------------|-------|-------|-------|-------|
+| Llama2-7B SFT         | 90.22 | 82.30 | 77.85 | 79.54 |
+| Llama2-7B w/ EAX      | 90.32 | 83.94 | 82.51 | 83.43 |
+| TowerBase-7B SFT      | 91.94 | 89.41 | 86.69 | 87.48 |
+| TowerBase-7B w/ EAX   | 91.88 | 89.92 | 89.19 | 89.53 |
+| Qwen2.5-7B SFT        | 91.94 | 85.99 | 86.37 | 86.89 |
+| Qwen2.5-7B w/ EAX     | 92.00 | 87.16 | 86.93 | 87.46 |
+
 
 ## Getting Started
 
